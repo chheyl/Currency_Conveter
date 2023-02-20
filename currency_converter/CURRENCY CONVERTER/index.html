@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>Currency Converter</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h2>Currency Convert</h2>
+        <div>
+            <input type="number">
+            <select>
+                <!--<option value="currency">Currency</option> -->
+            </select>
+        </div>
+        <span> = </span>
+         <div>
+            <input type="number">
+            <select>
+                <!-- <option value="currency">Currency</option> -->
+            </select>
+        </div>
+
+        <script>
+        const API_KEY = 'RuhCta1ococMfRFdgCgrt5sE1dbkuncP';
+const BASE_URL = `https://api.exchangeratesapi.io/v1/latest?`;
+
+async function getExchangeRates() {
+  try {
+    const response = await fetch(BASE_URL);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data.rates;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function convertCurrency(amount, fromCurrency, toCurrency) {
+  const exchangeRates = await getExchangeRates();
+
+  const fromRate = exchangeRates[fromCurrency];
+  const toRate = exchangeRates[toCurrency];
+
+  if (!fromRate || !toRate) {
+    console.error('Invalid currency code!');
+    return;
+  }
+
+  const convertedAmount = amount / fromRate * toRate;
+
+
+  return convertedAmount.toFixed(2);
+}
+
+// Example usage
+const amount = 100;
+const fromCurrency = 'USD';
+const toCurrency = 'EUR';
+
+convertCurrency(amount, fromCurrency, toCurrency)
+  .then((convertedAmount) => {
+    console.log(`${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`);
+  });
+        </script>
+    </body>
+</html>
